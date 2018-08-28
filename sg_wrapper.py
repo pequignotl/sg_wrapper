@@ -65,7 +65,7 @@ if os.getenv('PROD_TYPE', 'anim') == 'anim':
     ignoredTables = [
         'Cut',
     ]
-    remapTables = {'CustomEntity23': 'EditingCut'}
+    remapTables = {'CustomEntity23': ['EditingCut', 'Cut']}
 else:
     ignoredTables = []
     remapTables = {}
@@ -177,9 +177,8 @@ class Shotgun(object):
                 continue
 
             entityDisplayName = entitySchema[e]['name']['value'].replace(" ", "")
-            entityTypesToRegister = [entityDisplayName]
-            if e in remapTables:
-                entityTypesToRegister.append(remapTables[e])
+            entityTypesToRegister = set([entityDisplayName])
+            entityTypesToRegister.update(remapTables.get(e, []))
 
             for entityTypeToRegister in entityTypesToRegister:
                 newEntity = {'type': e, 'name': entityTypeToRegister, 'fields': []}
